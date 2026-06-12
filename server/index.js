@@ -17,6 +17,9 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
+
+// Trust the first proxy (nginx, traefik, etc.) so secure cookies work behind TLS termination
+if (process.env.TRUST_PROXY) app.set('trust proxy', 1);
 const SECRET = process.env.SESSION_SECRET || 'svfortuna-dev-secret-change-in-production';
 
 if (SECRET === 'svfortuna-dev-secret-change-in-production') {

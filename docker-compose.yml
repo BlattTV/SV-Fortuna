@@ -1,0 +1,25 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persist the SQLite databases (events, memberships, sessions)
+      - sv_data:/app/data
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # IMPORTANT: Change this to a long random string before deploying!
+      # Generate one with: openssl rand -hex 32
+      SESSION_SECRET: ${SESSION_SECRET:-change-me-before-deploying}
+      # Set to "1" when running behind nginx/traefik with TLS termination
+      # so that secure cookies work correctly with the forwarded proto header
+      TRUST_PROXY: ${TRUST_PROXY:-}
+    restart: unless-stopped
+    # Needed for express-rate-limit to see the real client IP behind a proxy
+    # Remove if you access the container directly (no nginx/traefik in front)
+    # extra_hosts:
+    #   - "host-gateway:host-gateway"
+
+volumes:
+  sv_data:
