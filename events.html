@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Alle Veranstaltungen des SV Fortuna Griefstedt – Feste, Public Viewing, Partys und mehr auf dem Sportplatz Griefstedt." />
+  <title>Veranstaltungen – SV Fortuna Griefstedt</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="page-form">
+
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-modal="true" aria-label="Cookie-Einstellungen">
+    <div class="cookie-inner">
+      <div class="cookie-text">
+        <strong>Wir verwenden Cookies</strong>
+        <p>Nur technisch notwendige Cookies. <a href="datenschutz.html">Datenschutzerklärung</a></p>
+      </div>
+      <div class="cookie-buttons">
+        <button id="cookie-accept" class="btn btn-primary">Verstanden</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar" class="navbar navbar-solid">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-emblem">⚽</span>
+        <span class="logo-text">SV <strong>Fortuna</strong> Griefstedt</span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-menu" id="nav-menu" role="list">
+        <li><a href="index.html#ueber-uns" class="nav-link">Über uns</a></li>
+        <li><a href="index.html#abteilungen" class="nav-link">Abteilungen</a></li>
+        <li><a href="events.html" class="nav-link" aria-current="page">Veranstaltungen</a></li>
+        <li><a href="index.html#kontakt" class="nav-link">Kontakt</a></li>
+        <li><a href="anmeldung.html" class="btn btn-primary nav-cta">Mitglied werden</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="eyebrow animate-fade-up">Sportplatz Griefstedt</div>
+      <h1 class="animate-fade-up delay-1">Veranstaltungen <span class="text-accent">2026</span></h1>
+      <p class="page-subtitle animate-fade-up delay-2">Feste, Public Viewing, Partys und mehr – immer was los beim SV Fortuna!</p>
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="evt-filter-bar">
+    <div class="container">
+      <div class="evt-filter-inner" id="filter-tabs" role="tablist" aria-label="Kategoriefilter">
+        <button class="evt-filter-btn active" data-cat="all" role="tab" aria-selected="true">🔎 Alle</button>
+        <button class="evt-filter-btn" data-cat="fest"    role="tab" aria-selected="false">🎉 Feste</button>
+        <button class="evt-filter-btn" data-cat="sport"   role="tab" aria-selected="false">⚽ Public Viewing</button>
+        <button class="evt-filter-btn" data-cat="party"   role="tab" aria-selected="false">🎵 Party</button>
+        <button class="evt-filter-btn" data-cat="regular" role="tab" aria-selected="false">📅 Regelbetrieb</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calendar + List -->
+  <section class="section section-sm">
+    <div class="container">
+      <div class="cal-layout">
+        <!-- Left: Calendar -->
+        <div class="cal-col">
+          <div id="svf-calendar"></div>
+        </div>
+        <!-- Right: Events List -->
+        <div class="cal-list-col">
+          <div id="svf-events-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlight Events (featured cards) -->
+  <section class="section section-sm section-dark" id="highlights">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="eyebrow eyebrow-light">Highlights</div>
+        <h2>Nicht verpassen: <span class="text-accent">Top-Events</span></h2>
+      </div>
+      <div class="evt-highlights-grid" id="highlights-grid">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© <span class="year-placeholder"></span> SV Fortuna Griefstedt e.V. | <a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/events-data.js"></script>
+  <script src="js/calendar.js"></script>
+  <script>
+    // Initialize calendar
+    var cal = new SvfCalendar({ calendarId: 'svf-calendar', listId: 'svf-events-list' });
+
+    // Filter tabs
+    document.getElementById('filter-tabs').addEventListener('click', function (e) {
+      var btn = e.target.closest('.evt-filter-btn');
+      if (!btn) return;
+      document.querySelectorAll('.evt-filter-btn').forEach(function (b) {
+        b.classList.remove('active');
+        b.setAttribute('aria-selected', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+      cal.setFilter(btn.dataset.cat);
+    });
+
+    // Render highlight cards
+    (function () {
+      var highlights = svfGetUpcoming().filter(function (e) { return e.highlight; });
+      var grid = document.getElementById('highlights-grid');
+      if (!highlights.length) {
+        grid.closest('section').style.display = 'none';
+        return;
+      }
+      var html = '';
+      highlights.forEach(function (e) {
+        var cat = SVF_CATEGORIES[e.category] || { label: e.category, icon: '📌', color: '#f59e0b', bg: 'rgba(245,158,11,.15)' };
+        html += '<div class="evt-big-card reveal">';
+        html += '<div class="evt-big-icon">' + cat.icon + '</div>';
+        html += '<div class="evt-big-date">' + svfFormatDate(e.date) + (e.time ? ' · ' + e.time + ' Uhr' : '') + '</div>';
+        html += '<h3>' + escHtml(e.title) + '</h3>';
+        html += '<p class="evt-big-loc">📍 ' + escHtml(e.location) + '</p>';
+        html += '<p class="evt-big-desc">' + escHtml(e.description) + '</p>';
+        html += '<span class="evt-badge" style="color:' + cat.color + ';background:' + cat.bg + '">' + cat.icon + ' ' + cat.label + '</span>';
+        html += '</div>';
+      });
+      grid.innerHTML = html;
+      // Trigger reveal
+      grid.querySelectorAll('.reveal').forEach(function (el) {
+        setTimeout(function () { el.classList.add('visible'); }, 100);
+      });
+    })();
+  </script>
+</body>
+</html>

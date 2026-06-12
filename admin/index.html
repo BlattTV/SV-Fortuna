@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin – SV Fortuna Griefstedt</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="admin-body">
+
+  <!-- ===== LOGIN SCREEN ===== -->
+  <div id="screen-login" class="admin-screen admin-screen-login">
+    <div class="admin-login-box">
+      <div class="admin-login-logo">
+        <span class="logo-emblem" style="font-size:2.5rem">⚽</span>
+        <div>
+          <div class="logo-text" style="font-size:1.3rem">SV <strong>Fortuna</strong> Griefstedt</div>
+          <div class="admin-login-sub">Verwaltungsbereich</div>
+        </div>
+      </div>
+
+      <div class="admin-security-note" id="default-pw-hint">
+        <strong>ℹ️ Erstanmeldung</strong>
+        Benutzername: <code>admin</code> · Passwort: <code>Fortuna2026!</code><br />
+        <small>Bitte ändern Sie das Passwort nach der ersten Anmeldung!</small>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="login-user">Benutzername</label>
+          <input type="text" id="login-user" name="username" autocomplete="username" value="admin" required />
+        </div>
+        <div class="form-group">
+          <label for="login-pw">Passwort</label>
+          <div class="pw-wrap">
+            <input type="password" id="login-pw" name="password" autocomplete="current-password" required />
+            <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Passwort anzeigen">👁</button>
+          </div>
+        </div>
+        <div class="admin-error" id="login-error" hidden></div>
+        <button type="submit" class="btn btn-primary btn-lg" id="login-btn" style="width:100%">
+          <span class="btn-text">Anmelden</span>
+          <span class="btn-spinner" hidden><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40 20"/></svg></span>
+        </button>
+      </form>
+
+      <div class="admin-legal-hint">
+        ⚠️ <strong>Hinweis:</strong> Diese Verwaltungsoberfläche speichert Daten lokal im Browser (localStorage). Für produktiven Einsatz wird ein serverseitiges Backend empfohlen.
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD SCREEN ===== -->
+  <div id="screen-dashboard" class="admin-screen" hidden>
+
+    <!-- Admin Topbar -->
+    <header class="admin-topbar">
+      <div class="admin-topbar-inner">
+        <div class="admin-topbar-brand">
+          <span class="logo-emblem">⚽</span>
+          <span class="admin-topbar-title">SV Fortuna Admin</span>
+        </div>
+        <div class="admin-topbar-actions">
+          <a href="../events.html" target="_blank" class="btn btn-ghost btn-sm">↗ Website</a>
+          <button id="btn-change-pw" class="btn btn-ghost btn-sm">🔑 Passwort ändern</button>
+          <button id="btn-logout" class="btn btn-ghost btn-sm">Abmelden</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="admin-stats-bar">
+      <div class="admin-stat-card">
+        <div class="admin-stat-num" id="stat-total">–</div>
+        <div class="admin-stat-label">Veranstaltungen gesamt</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-num" id="stat-upcoming">–</div>
+        <div class="admin-stat-label">Bevorstehend</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-num" id="stat-highlights">–</div>
+        <div class="admin-stat-label">Highlights</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Toolbar -->
+      <div class="admin-toolbar">
+        <div class="admin-toolbar-left">
+          <h2 class="admin-section-title">Veranstaltungen</h2>
+          <input type="search" id="admin-search" placeholder="Suchen…" class="admin-search" aria-label="Veranstaltungen suchen" />
+          <select id="admin-filter-cat" class="admin-filter-select" aria-label="Kategorie filtern">
+            <option value="">Alle Kategorien</option>
+            <option value="fest">🎉 Fest & Feier</option>
+            <option value="sport">⚽ Public Viewing</option>
+            <option value="party">🎵 Party & Disco</option>
+            <option value="regular">📅 Regelbetrieb</option>
+            <option value="jugend">🧒 Jugend</option>
+          </select>
+        </div>
+        <button id="btn-add-event" class="btn btn-primary">+ Neue Veranstaltung</button>
+      </div>
+
+      <!-- Events Table -->
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="admin-events-table">
+          <thead>
+            <tr>
+              <th class="sort-col" data-sort="date">Datum <span class="sort-icon">↕</span></th>
+              <th class="sort-col" data-sort="title">Titel <span class="sort-icon">↕</span></th>
+              <th>Kategorie</th>
+              <th>Ort</th>
+              <th>Highlight</th>
+              <th>Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="admin-events-tbody"></tbody>
+        </table>
+        <div class="admin-empty" id="admin-empty" hidden>Keine Veranstaltungen gefunden.</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== MODAL: Add / Edit Event ===== -->
+  <div id="modal-event" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-title">Veranstaltung hinzufügen</h3>
+        <button class="modal-close" id="modal-close" aria-label="Schließen">✕</button>
+      </div>
+      <form id="event-form" novalidate>
+        <input type="hidden" id="edit-id" />
+        <div class="form-row">
+          <div class="form-group form-group-full">
+            <label for="evt-title">Titel <span class="required-mark">*</span></label>
+            <input type="text" id="evt-title" required placeholder="z.B. Sommerfest" />
+            <span class="field-error"></span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="evt-date">Datum <span class="required-mark">*</span></label>
+            <input type="date" id="evt-date" required />
+            <span class="field-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="evt-time">Uhrzeit</label>
+            <input type="time" id="evt-time" placeholder="18:00" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="evt-category">Kategorie <span class="required-mark">*</span></label>
+            <select id="evt-category" required>
+              <option value="">Bitte wählen</option>
+              <option value="fest">🎉 Fest & Feier</option>
+              <option value="sport">⚽ Public Viewing</option>
+              <option value="party">🎵 Party & Disco</option>
+              <option value="regular">📅 Regelbetrieb</option>
+              <option value="jugend">🧒 Jugend</option>
+            </select>
+            <span class="field-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="evt-location">Veranstaltungsort</label>
+            <input type="text" id="evt-location" value="Sportplatz Griefstedt" placeholder="Sportplatz Griefstedt" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-group-full">
+            <label for="evt-description">Beschreibung</label>
+            <textarea id="evt-description" rows="4" placeholder="Details zur Veranstaltung…"></textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group form-group-full">
+            <label class="checkbox-label">
+              <input type="checkbox" id="evt-highlight" />
+              Als Highlight auf der Veranstaltungsseite hervorheben
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="modal-cancel">Abbrechen</button>
+          <button type="submit" class="btn btn-primary" id="modal-save">Speichern</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Change Password ===== -->
+  <div id="modal-pw" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="pw-modal-title">
+    <div class="modal-box modal-box-sm">
+      <div class="modal-header">
+        <h3 id="pw-modal-title">Passwort ändern</h3>
+        <button class="modal-close" id="modal-pw-close" aria-label="Schließen">✕</button>
+      </div>
+      <form id="change-pw-form" novalidate>
+        <div class="form-group">
+          <label for="new-pw">Neues Passwort <span class="required-mark">*</span></label>
+          <input type="password" id="new-pw" required minlength="8" autocomplete="new-password" placeholder="Mind. 8 Zeichen" />
+          <span class="field-error" id="pw-error"></span>
+        </div>
+        <div class="form-group">
+          <label for="new-pw2">Passwort wiederholen <span class="required-mark">*</span></label>
+          <input type="password" id="new-pw2" required autocomplete="new-password" placeholder="Passwort wiederholen" />
+          <span class="field-error" id="pw2-error"></span>
+        </div>
+        <div class="admin-error" id="pw-form-error" hidden></div>
+        <div class="admin-success" id="pw-form-success" hidden>✅ Passwort erfolgreich geändert!</div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="modal-pw-cancel">Abbrechen</button>
+          <button type="submit" class="btn btn-primary">Passwort speichern</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== DELETE CONFIRM ===== -->
+  <div id="modal-delete" class="modal-overlay" hidden role="dialog" aria-modal="true">
+    <div class="modal-box modal-box-sm">
+      <div class="modal-header">
+        <h3>Veranstaltung löschen?</h3>
+        <button class="modal-close" id="modal-del-close" aria-label="Schließen">✕</button>
+      </div>
+      <p style="color:var(--clr-mid);margin-bottom:1.5rem">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+      <p id="delete-evt-title" style="font-weight:700;margin-bottom:1.5rem"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="del-cancel">Abbrechen</button>
+        <button class="btn" id="del-confirm" style="background:#ef4444;color:#fff;border-color:#ef4444">Löschen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/events-data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
