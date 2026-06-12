@@ -1,22 +1,43 @@
 'use strict';
 
-/* Minimal calendar widget – depends on events-data.js */
+/* Minimal calendar widget – depends on events-data.js being loaded first. */
 
 function SvfCalendar(opts) {
   this.calEl    = document.getElementById(opts.calendarId);
   this.listEl   = document.getElementById(opts.listId);
+  this.events   = opts.events || [];
   this.today    = new Date();
   this.curYear  = this.today.getFullYear();
-  this.curMonth = this.today.getMonth() + 1; // 1-12
+  this.curMonth = this.today.getMonth() + 1;
   this.selected = null;
   this.filter   = 'all';
   this._render();
 }
 
-SvfCalendar.prototype._monthName = function (year, month) {
-  return new Date(year, month - 1, 1).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+/* ---- Update events (called after async load) ---- */
+SvfCalendar.prototype.setEvents = function (events) {
+  this.events = events || [];
+  this._render();
 };
 
+/* ---- Internal filters (use this.events, not global functions) ---- */
+SvfCalendar.prototype._eventsForMonth = function (year, month) {
+  var prefix = year + '-' + (month < 10 ? '0' + month : '' + month);
+  return this.events.filter(function (e) { return e.date.startsWith(prefix); });
+};
+
+SvfCalendar.prototype._eventsForDate = function (dateStr) {
+  return this.events.filter(function (e) { return e.date === dateStr; });
+};
+
+SvfCalendar.prototype._upcoming = function () {
+  var today = new Date().toISOString().split('T')[0];
+  return this.events
+    .filter(function (e) { return e.date >= today; })
+    .sort(function (a, b) { return a.date.localeCompare(b.date); });
+};
+
+/* ---- Render ---- */
 SvfCalendar.prototype._render = function () {
   this._renderCal();
   this._renderList();
@@ -25,43 +46,43 @@ SvfCalendar.prototype._render = function () {
 SvfCalendar.prototype._renderCal = function () {
   var self = this;
   var y = this.curYear, m = this.curMonth;
-  var monthEvents = svfGetEventsForMonth(y, m);
+  var monthEvents = this._eventsForMonth(y, m);
 
-  // Build date→categories map
   var evtMap = {};
   monthEvents.forEach(function (e) {
     if (!evtMap[e.date]) evtMap[e.date] = [];
     if (evtMap[e.date].indexOf(e.category) === -1) evtMap[e.date].push(e.category);
   });
 
-  var firstDay = new Date(y, m - 1, 1).getDay(); // 0=Sun
-  // Convert to Mon-start (0=Mon…6=Sun)
-  firstDay = (firstDay + 6) % 7;
+  var firstDay = (new Date(y, m - 1, 1).getDay() + 6) % 7; // Mon=0
   var daysInMonth = new Date(y, m, 0).getDate();
   var todayStr = this.today.toISOString().split('T')[0];
+
+  var monthLabel = new Date(y, m - 1, 1)
+    .toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
 
   var html = '<div class="cal-widget">';
   html += '<div class="cal-nav">';
   html += '<button class="cal-btn-nav" id="cal-prev" aria-label="Vorheriger Monat">&#8249;</button>';
-  html += '<span class="cal-month-label">' + this._monthName(y, m) + '</span>';
+  html += '<span class="cal-month-label">' + monthLabel + '</span>';
   html += '<button class="cal-btn-nav" id="cal-next" aria-label="Nächster Monat">&#8250;</button>';
-  html += '</div>';
+  html += '</div><div class="cal-grid">';
 
-  html += '<div class="cal-grid">';
   ['Mo','Di','Mi','Do','Fr','Sa','So'].forEach(function (d) {
     html += '<div class="cal-head-cell">' + d + '</div>';
   });
 
-  // Empty cells before 1st
   for (var i = 0; i < firstDay; i++) html += '<div class="cal-cell cal-cell-empty"></div>';
 
   for (var day = 1; day <= daysInMonth; day++) {
-    var dateStr = y + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+    var dd = day < 10 ? '0' + day : '' + day;
+    var mm = m  < 10 ? '0' + m   : '' + m;
+    var dateStr = y + '-' + mm + '-' + dd;
     var cats = evtMap[dateStr] || [];
-    var cls = 'cal-cell';
-    if (dateStr === todayStr) cls += ' cal-today';
-    if (dateStr === this.selected) cls += ' cal-selected';
-    if (cats.length) cls += ' cal-has-events';
+    var cls = 'cal-cell' +
+      (dateStr === todayStr   ? ' cal-today'    : '') +
+      (dateStr === this.selected ? ' cal-selected' : '') +
+      (cats.length            ? ' cal-has-events' : '');
 
     html += '<div class="' + cls + '" data-date="' + dateStr + '">';
     html += '<span class="cal-day-num">' + day + '</span>';
@@ -75,12 +96,10 @@ SvfCalendar.prototype._renderCal = function () {
     }
     html += '</div>';
   }
-  html += '</div></div>'; // cal-grid, cal-widget
+  html += '</div></div>';
 
   this.calEl.innerHTML = html;
 
-  // Events
-  var self = this;
   document.getElementById('cal-prev').addEventListener('click', function () { self.prevMonth(); });
   document.getElementById('cal-next').addEventListener('click', function () { self.nextMonth(); });
   this.calEl.querySelectorAll('.cal-cell[data-date]').forEach(function (cell) {
@@ -94,13 +113,14 @@ SvfCalendar.prototype._renderCal = function () {
 SvfCalendar.prototype._renderList = function () {
   var events;
   if (this.selected) {
-    events = svfGetEventsForDate(this.selected);
+    events = this._eventsForDate(this.selected);
   } else {
-    events = svfGetUpcoming(20);
+    events = this._upcoming();
   }
 
   if (this.filter !== 'all') {
-    events = events.filter(function (e) { return e.category === this.filter; }.bind(this));
+    var f = this.filter;
+    events = events.filter(function (e) { return e.category === f; });
   }
 
   var heading = this.selected
@@ -108,7 +128,7 @@ SvfCalendar.prototype._renderList = function () {
     : '<h3 class="events-list-heading">Kommende Veranstaltungen</h3>';
 
   if (!events.length) {
-    this.listEl.innerHTML = heading + '<p class="events-empty">Keine Veranstaltungen' + (this.selected ? ' an diesem Tag' : '') + '.</p>';
+    this.listEl.innerHTML = heading + '<p class="events-empty">Keine Veranstaltungen' + (this.selected ? ' an diesem Tag.' : '.') + '</p>';
     return;
   }
 
@@ -120,8 +140,8 @@ SvfCalendar.prototype._renderList = function () {
     html += '<div class="evt-card-body">';
     html += '<span class="evt-badge" style="color:' + cat.color + ';background:' + cat.bg + '">' + cat.icon + ' ' + cat.label + '</span>';
     html += '<h4 class="evt-title">' + escHtml(e.title) + '</h4>';
-    html += '<p class="evt-loc">📍 ' + escHtml(e.location) + '</p>';
-    html += '<p class="evt-desc">' + escHtml(e.description) + '</p>';
+    html += '<p class="evt-loc">📍 ' + escHtml(e.location || '') + '</p>';
+    html += '<p class="evt-desc">' + escHtml(e.description || '') + '</p>';
     html += '</div></div>';
   });
 
@@ -143,11 +163,13 @@ SvfCalendar.prototype.nextMonth = function () {
 };
 
 SvfCalendar.prototype.setFilter = function (cat) {
-  this.filter = cat;
+  this.filter   = cat;
   this.selected = null;
   this._render();
 };
 
 function escHtml(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }

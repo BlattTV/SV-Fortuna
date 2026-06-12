@@ -307,10 +307,10 @@
   <script src="js/events-data.js"></script>
   <script>
     // Events preview on homepage
-    (function () {
+    svfLoadEvents().then(function () {
       var grid = document.getElementById('events-preview-home');
       if (!grid) return;
-      var upcoming = svfGetUpcoming(4);
+      var upcoming = svfGetUpcomingSync(4);
       if (!upcoming.length) {
         grid.innerHTML = '<p style="color:var(--clr-mid);text-align:center">Keine bevorstehenden Veranstaltungen.</p>';
         return;
@@ -325,11 +325,10 @@
         html += '</div>';
       });
       grid.innerHTML = html;
-      // Trigger reveal animations
       setTimeout(function () {
         grid.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('visible'); });
       }, 200);
-    })();
+    });
   </script>
 </body>
 </html>

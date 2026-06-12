@@ -109,13 +109,41 @@
   <script src="js/events-data.js"></script>
   <script src="js/calendar.js"></script>
   <script>
-    // Initialize calendar
-    var cal = new SvfCalendar({ calendarId: 'svf-calendar', listId: 'svf-events-list' });
+    var cal = null;
+
+    svfLoadEvents().then(function (events) {
+      // Initialize calendar with fetched events
+      cal = new SvfCalendar({ calendarId: 'svf-calendar', listId: 'svf-events-list', events: events });
+
+      // Render highlight cards
+      var highlights = svfGetUpcomingSync().filter(function (e) { return e.highlight; });
+      var grid = document.getElementById('highlights-grid');
+      if (!highlights.length) {
+        grid.closest('section').style.display = 'none';
+      } else {
+        var html = '';
+        highlights.forEach(function (e) {
+          var cat = SVF_CATEGORIES[e.category] || { label: e.category, icon: '📌', color: '#f59e0b', bg: 'rgba(245,158,11,.15)' };
+          html += '<div class="evt-big-card reveal">';
+          html += '<div class="evt-big-icon">' + cat.icon + '</div>';
+          html += '<div class="evt-big-date">' + svfFormatDate(e.date) + (e.time ? ' · ' + e.time + ' Uhr' : '') + '</div>';
+          html += '<h3>' + escHtml(e.title) + '</h3>';
+          html += '<p class="evt-big-loc">📍 ' + escHtml(e.location) + '</p>';
+          html += '<p class="evt-big-desc">' + escHtml(e.description) + '</p>';
+          html += '<span class="evt-badge" style="color:' + cat.color + ';background:' + cat.bg + '">' + cat.icon + ' ' + cat.label + '</span>';
+          html += '</div>';
+        });
+        grid.innerHTML = html;
+        grid.querySelectorAll('.reveal').forEach(function (el) {
+          setTimeout(function () { el.classList.add('visible'); }, 100);
+        });
+      }
+    });
 
     // Filter tabs
     document.getElementById('filter-tabs').addEventListener('click', function (e) {
       var btn = e.target.closest('.evt-filter-btn');
-      if (!btn) return;
+      if (!btn || !cal) return;
       document.querySelectorAll('.evt-filter-btn').forEach(function (b) {
         b.classList.remove('active');
         b.setAttribute('aria-selected', 'false');
@@ -124,33 +152,6 @@
       btn.setAttribute('aria-selected', 'true');
       cal.setFilter(btn.dataset.cat);
     });
-
-    // Render highlight cards
-    (function () {
-      var highlights = svfGetUpcoming().filter(function (e) { return e.highlight; });
-      var grid = document.getElementById('highlights-grid');
-      if (!highlights.length) {
-        grid.closest('section').style.display = 'none';
-        return;
-      }
-      var html = '';
-      highlights.forEach(function (e) {
-        var cat = SVF_CATEGORIES[e.category] || { label: e.category, icon: '📌', color: '#f59e0b', bg: 'rgba(245,158,11,.15)' };
-        html += '<div class="evt-big-card reveal">';
-        html += '<div class="evt-big-icon">' + cat.icon + '</div>';
-        html += '<div class="evt-big-date">' + svfFormatDate(e.date) + (e.time ? ' · ' + e.time + ' Uhr' : '') + '</div>';
-        html += '<h3>' + escHtml(e.title) + '</h3>';
-        html += '<p class="evt-big-loc">📍 ' + escHtml(e.location) + '</p>';
-        html += '<p class="evt-big-desc">' + escHtml(e.description) + '</p>';
-        html += '<span class="evt-badge" style="color:' + cat.color + ';background:' + cat.bg + '">' + cat.icon + ' ' + cat.label + '</span>';
-        html += '</div>';
-      });
-      grid.innerHTML = html;
-      // Trigger reveal
-      grid.querySelectorAll('.reveal').forEach(function (el) {
-        setTimeout(function () { el.classList.add('visible'); }, 100);
-      });
-    })();
   </script>
 </body>
 </html>

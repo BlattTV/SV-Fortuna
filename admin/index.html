@@ -9,6 +9,59 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    .admin-tabs {
+      display: flex;
+      gap: .5rem;
+      padding: 1rem 2rem 0;
+      border-bottom: 2px solid var(--clr-light);
+      background: var(--clr-white);
+    }
+    .admin-tab-btn {
+      padding: .6rem 1.4rem;
+      border: none;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: transparent;
+      font-family: var(--font-sans);
+      font-size: .93rem;
+      font-weight: 600;
+      color: var(--clr-mid);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: color var(--transition), border-color var(--transition);
+    }
+    .admin-tab-btn.active { color: var(--clr-primary); border-bottom-color: var(--clr-primary); }
+    .admin-tab-btn:hover:not(.active) { color: var(--clr-dark-3); }
+    .status-badge {
+      display: inline-block;
+      padding: .2rem .65rem;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: .5rem 1.5rem;
+      font-size: .93rem;
+    }
+    .detail-grid dt {
+      font-weight: 600;
+      color: var(--clr-mid);
+      white-space: nowrap;
+    }
+    .detail-grid dd { margin: 0; word-break: break-word; }
+    .detail-grid code {
+      background: var(--clr-light);
+      padding: .15rem .4rem;
+      border-radius: 4px;
+      font-size: .85rem;
+      letter-spacing: .05em;
+    }
+    #memb-detail-status { margin-bottom: 1rem; }
+  </style>
 </head>
 <body class="admin-body">
 
@@ -47,10 +100,6 @@
           <span class="btn-spinner" hidden><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40 20"/></svg></span>
         </button>
       </form>
-
-      <div class="admin-legal-hint">
-        ⚠️ <strong>Hinweis:</strong> Diese Verwaltungsoberfläche speichert Daten lokal im Browser (localStorage). Für produktiven Einsatz wird ein serverseitiges Backend empfohlen.
-      </div>
     </div>
   </div>
 
@@ -86,20 +135,29 @@
         <div class="admin-stat-num" id="stat-highlights">–</div>
         <div class="admin-stat-label">Highlights</div>
       </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-num" id="stat-pending">–</div>
+        <div class="admin-stat-label">Offene Anträge</div>
+      </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="admin-main">
-      <!-- Toolbar -->
+    <!-- Tab Navigation -->
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" id="tab-events">📅 Veranstaltungen</button>
+      <button class="admin-tab-btn"        id="tab-memberships">📋 Mitgliedsanträge</button>
+    </div>
+
+    <!-- ── Events Panel ── -->
+    <main class="admin-main" id="panel-events">
       <div class="admin-toolbar">
         <div class="admin-toolbar-left">
           <h2 class="admin-section-title">Veranstaltungen</h2>
           <input type="search" id="admin-search" placeholder="Suchen…" class="admin-search" aria-label="Veranstaltungen suchen" />
           <select id="admin-filter-cat" class="admin-filter-select" aria-label="Kategorie filtern">
             <option value="">Alle Kategorien</option>
-            <option value="fest">🎉 Fest & Feier</option>
+            <option value="fest">🎉 Fest &amp; Feier</option>
             <option value="sport">⚽ Public Viewing</option>
-            <option value="party">🎵 Party & Disco</option>
+            <option value="party">🎵 Party &amp; Disco</option>
             <option value="regular">📅 Regelbetrieb</option>
             <option value="jugend">🧒 Jugend</option>
           </select>
@@ -107,7 +165,6 @@
         <button id="btn-add-event" class="btn btn-primary">+ Neue Veranstaltung</button>
       </div>
 
-      <!-- Events Table -->
       <div class="admin-table-wrap">
         <table class="admin-table" id="admin-events-table">
           <thead>
@@ -125,7 +182,41 @@
         <div class="admin-empty" id="admin-empty" hidden>Keine Veranstaltungen gefunden.</div>
       </div>
     </main>
-  </div>
+
+    <!-- ── Memberships Panel ── -->
+    <main class="admin-main" id="panel-memberships" hidden>
+      <div class="admin-toolbar">
+        <div class="admin-toolbar-left">
+          <h2 class="admin-section-title">Mitgliedsanträge</h2>
+          <input type="search" id="memb-search" placeholder="Name oder E-Mail…" class="admin-search" aria-label="Mitglieder suchen" />
+          <select id="memb-filter-status" class="admin-filter-select" aria-label="Status filtern">
+            <option value="">Alle Status</option>
+            <option value="pending">Ausstehend</option>
+            <option value="approved">Genehmigt</option>
+            <option value="rejected">Abgelehnt</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="admin-memb-table">
+          <thead>
+            <tr>
+              <th>Eingereicht</th>
+              <th>Name</th>
+              <th>E-Mail</th>
+              <th>Beitrag</th>
+              <th>Status</th>
+              <th>Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="admin-memb-tbody"></tbody>
+        </table>
+        <div class="admin-empty" id="admin-memb-empty" hidden>Keine Anträge gefunden.</div>
+      </div>
+    </main>
+
+  </div><!-- /screen-dashboard -->
 
   <!-- ===== MODAL: Add / Edit Event ===== -->
   <div id="modal-event" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -159,9 +250,9 @@
             <label for="evt-category">Kategorie <span class="required-mark">*</span></label>
             <select id="evt-category" required>
               <option value="">Bitte wählen</option>
-              <option value="fest">🎉 Fest & Feier</option>
+              <option value="fest">🎉 Fest &amp; Feier</option>
               <option value="sport">⚽ Public Viewing</option>
-              <option value="party">🎵 Party & Disco</option>
+              <option value="party">🎵 Party &amp; Disco</option>
               <option value="regular">📅 Regelbetrieb</option>
               <option value="jugend">🧒 Jugend</option>
             </select>
@@ -222,7 +313,7 @@
     </div>
   </div>
 
-  <!-- ===== DELETE CONFIRM ===== -->
+  <!-- ===== MODAL: Delete Confirm ===== -->
   <div id="modal-delete" class="modal-overlay" hidden role="dialog" aria-modal="true">
     <div class="modal-box modal-box-sm">
       <div class="modal-header">
@@ -234,6 +325,23 @@
       <div class="modal-actions">
         <button class="btn btn-ghost" id="del-cancel">Abbrechen</button>
         <button class="btn" id="del-confirm" style="background:#ef4444;color:#fff;border-color:#ef4444">Löschen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Membership Detail ===== -->
+  <div id="modal-memb-detail" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="memb-detail-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="memb-detail-title">Mitgliedsantrag</h3>
+        <button class="modal-close" id="modal-memb-close" aria-label="Schließen">✕</button>
+      </div>
+      <div id="memb-detail-status"></div>
+      <div id="memb-detail-body"></div>
+      <div class="modal-actions">
+        <button id="memb-modal-approve" class="btn btn-primary" style="background:#22c55e;border-color:#22c55e" hidden>✔ Genehmigen</button>
+        <button id="memb-modal-reject"  class="btn" style="background:#ef4444;color:#fff;border-color:#ef4444" hidden>✘ Ablehnen</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('modal-memb-detail').hidden=true;document.body.style.overflow=''">Schließen</button>
       </div>
     </div>
   </div>
