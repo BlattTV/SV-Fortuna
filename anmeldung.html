@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SV Fortuna Mitgliedsantrag – Jetzt online Mitglied werden und Teil unserer Sportfamilie werden." />
+  <title>Mitglied werden – SV Fortuna</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="page-form">
+
+  <!-- Cookie-Banner -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-modal="true" aria-label="Cookie-Einstellungen">
+    <div class="cookie-inner">
+      <div class="cookie-text">
+        <strong>Wir verwenden Cookies</strong>
+        <p>Wir nutzen ausschließlich technisch notwendige Cookies. Weitere Informationen: <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+      </div>
+      <div class="cookie-buttons">
+        <button id="cookie-accept" class="btn btn-primary">Verstanden</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar" class="navbar navbar-solid">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-emblem">⚽</span>
+        <span class="logo-text">SV <strong>Fortuna</strong></span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menü öffnen" aria-expanded="false" aria-controls="nav-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-menu" id="nav-menu" role="list">
+        <li><a href="index.html#ueber-uns" class="nav-link">Über uns</a></li>
+        <li><a href="index.html#abteilungen" class="nav-link">Abteilungen</a></li>
+        <li><a href="index.html#aktuelles" class="nav-link">Aktuelles</a></li>
+        <li><a href="index.html#kontakt" class="nav-link">Kontakt</a></li>
+        <li><a href="anmeldung.html" class="btn btn-primary nav-cta">Mitglied werden</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="eyebrow animate-fade-up">Mitgliedschaft</div>
+      <h1 class="animate-fade-up delay-1">Jetzt <span class="text-accent">Mitglied werden</span></h1>
+      <p class="page-subtitle animate-fade-up delay-2">Füllen Sie das Formular aus – wir melden uns innerhalb von 3 Werktagen bei Ihnen.</p>
+    </div>
+  </div>
+
+  <!-- Beiträge -->
+  <section class="section section-sm" id="beitraege">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="eyebrow">Mitgliedsbeiträge</div>
+        <h2>Transparente <span class="text-accent">Beiträge</span></h2>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card reveal">
+          <div class="pricing-label">Kinder & Jugend</div>
+          <div class="pricing-price">6 €<span>/Monat</span></div>
+          <p>Bis 18 Jahre</p>
+        </div>
+        <div class="pricing-card pricing-featured reveal delay-1">
+          <div class="pricing-badge">Beliebt</div>
+          <div class="pricing-label">Erwachsene</div>
+          <div class="pricing-price">14 €<span>/Monat</span></div>
+          <p>Ab 18 Jahre</p>
+        </div>
+        <div class="pricing-card reveal delay-2">
+          <div class="pricing-label">Familie</div>
+          <div class="pricing-price">22 €<span>/Monat</span></div>
+          <p>2 Erw. + Kinder</p>
+        </div>
+        <div class="pricing-card reveal delay-3">
+          <div class="pricing-label">Senioren / Ermäßigt</div>
+          <div class="pricing-price">8 €<span>/Monat</span></div>
+          <p>Ab 65 J. / Nachweis</p>
+        </div>
+      </div>
+      <p class="pricing-note reveal">Einmalige Aufnahmegebühr: 15 € · Beitragsbefreiung auf Antrag möglich · SEPA-Lastschrift</p>
+    </div>
+  </section>
+
+  <!-- Formular -->
+  <section class="section section-sm section-dark">
+    <div class="container form-container">
+      <div class="form-box reveal">
+        <h2>Mitgliedsantrag</h2>
+        <p class="form-intro">Alle mit <span class="required-mark">*</span> markierten Felder sind Pflichtfelder.</p>
+
+        <!-- Datenschutzhinweis (DSGVO Art. 13) über dem Formular -->
+        <div class="dsgvo-notice">
+          <strong>Hinweis zur Datenverarbeitung (DSGVO Art. 13)</strong>
+          <p>Ihre personenbezogenen Daten werden vom SV Fortuna e.V., Sportplatzstraße 1, 12345 Musterstadt (Verantwortlicher) ausschließlich zur Bearbeitung Ihres Mitgliedsantrags und zur Verwaltung Ihrer Mitgliedschaft verarbeitet. Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Daten werden nicht an Dritte weitergegeben, es sei denn, dies ist gesetzlich vorgeschrieben oder zur Vertragserfüllung notwendig. Ihre Daten werden für die Dauer der Mitgliedschaft und gemäß gesetzlicher Aufbewahrungsfristen gespeichert. Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung sowie das Recht auf Datenübertragbarkeit. Weitere Informationen in unserer <a href="datenschutz.html">Datenschutzerklärung</a>.</p>
+        </div>
+
+        <form id="membership-form" novalidate>
+          <!-- Persönliche Daten -->
+          <fieldset>
+            <legend>Persönliche Daten</legend>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="anrede">Anrede <span class="required-mark">*</span></label>
+                <select id="anrede" name="anrede" required>
+                  <option value="">Bitte wählen</option>
+                  <option value="herr">Herr</option>
+                  <option value="frau">Frau</option>
+                  <option value="divers">Divers / Keine Angabe</option>
+                </select>
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="vorname">Vorname <span class="required-mark">*</span></label>
+                <input type="text" id="vorname" name="vorname" autocomplete="given-name" required minlength="2" placeholder="Max" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="nachname">Nachname <span class="required-mark">*</span></label>
+                <input type="text" id="nachname" name="nachname" autocomplete="family-name" required minlength="2" placeholder="Mustermann" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="geburtsdatum">Geburtsdatum <span class="required-mark">*</span></label>
+                <input type="date" id="geburtsdatum" name="geburtsdatum" autocomplete="bday" required />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Kontaktdaten -->
+          <fieldset>
+            <legend>Kontaktdaten</legend>
+            <div class="form-row">
+              <div class="form-group form-group-full">
+                <label for="strasse">Straße und Hausnummer <span class="required-mark">*</span></label>
+                <input type="text" id="strasse" name="strasse" autocomplete="street-address" required placeholder="Musterstraße 42" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group form-group-sm">
+                <label for="plz">PLZ <span class="required-mark">*</span></label>
+                <input type="text" id="plz" name="plz" autocomplete="postal-code" required pattern="[0-9]{5}" maxlength="5" placeholder="12345" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="ort">Ort <span class="required-mark">*</span></label>
+                <input type="text" id="ort" name="ort" autocomplete="address-level2" required placeholder="Musterstadt" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="telefon">Telefon</label>
+                <input type="tel" id="telefon" name="telefon" autocomplete="tel" placeholder="+49 123 456789" />
+              </div>
+              <div class="form-group">
+                <label for="email">E-Mail <span class="required-mark">*</span></label>
+                <input type="email" id="email" name="email" autocomplete="email" required placeholder="max@beispiel.de" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Mitgliedschaft -->
+          <fieldset>
+            <legend>Mitgliedschaft</legend>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="beitrag">Beitragskategorie <span class="required-mark">*</span></label>
+                <select id="beitrag" name="beitrag" required>
+                  <option value="">Bitte wählen</option>
+                  <option value="kind">Kinder &amp; Jugend (bis 18 J.) – 6 €/Monat</option>
+                  <option value="erwachsen">Erwachsene (ab 18 J.) – 14 €/Monat</option>
+                  <option value="familie">Familie – 22 €/Monat</option>
+                  <option value="senior">Senioren / Ermäßigt – 8 €/Monat</option>
+                </select>
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="eintrittsdatum">Gewünschtes Eintrittsdatum <span class="required-mark">*</span></label>
+                <input type="date" id="eintrittsdatum" name="eintrittsdatum" required />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group form-group-full">
+                <label>Gewünschte Abteilung(en)</label>
+                <div class="checkbox-group">
+                  <label class="checkbox-label"><input type="checkbox" name="abteilung" value="fussball" /> Fußball</label>
+                  <label class="checkbox-label"><input type="checkbox" name="abteilung" value="tennis" /> Tennis</label>
+                  <label class="checkbox-label"><input type="checkbox" name="abteilung" value="schwimmen" /> Schwimmen</label>
+                  <label class="checkbox-label"><input type="checkbox" name="abteilung" value="fitness" /> Fitness</label>
+                  <label class="checkbox-label"><input type="checkbox" name="abteilung" value="tischtennis" /> Tischtennis</label>
+                  <label class="checkbox-label"><input type="checkbox" name="abteilung" value="yoga" /> Yoga &amp; Pilates</label>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- SEPA-Lastschrift -->
+          <fieldset>
+            <legend>SEPA-Lastschriftmandat</legend>
+            <p class="fieldset-desc">Für den Einzug des Mitgliedsbeitrags benötigen wir Ihre Bankverbindung. Die Gläubiger-ID lautet: DE12ZZZ00000000000. Mandatsreferenz wird nach Antragsbearbeitung mitgeteilt.</p>
+            <div class="form-row">
+              <div class="form-group form-group-full">
+                <label for="kontoinhaber">Kontoinhaber <span class="required-mark">*</span></label>
+                <input type="text" id="kontoinhaber" name="kontoinhaber" autocomplete="cc-name" required placeholder="Max Mustermann" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group form-group-full">
+                <label for="iban">IBAN <span class="required-mark">*</span></label>
+                <input type="text" id="iban" name="iban" required placeholder="DE00 0000 0000 0000 0000 00" maxlength="34" autocomplete="off" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="bic">BIC</label>
+                <input type="text" id="bic" name="bic" placeholder="XXXXXXXX" maxlength="11" autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label for="bank">Kreditinstitut</label>
+                <input type="text" id="bank" name="bank" placeholder="Musterbank" autocomplete="off" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Erziehungsberechtigter (für Minderjährige) -->
+          <fieldset id="erziehungsberechtigter-fieldset" style="display:none;">
+            <legend>Erziehungsberechtigte Person (bei Minderjährigen)</legend>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="erz-vorname">Vorname <span class="required-mark">*</span></label>
+                <input type="text" id="erz-vorname" name="erz_vorname" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="erz-nachname">Nachname <span class="required-mark">*</span></label>
+                <input type="text" id="erz-nachname" name="erz_nachname" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="erz-email">E-Mail <span class="required-mark">*</span></label>
+                <input type="email" id="erz-email" name="erz_email" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+              <div class="form-group">
+                <label for="erz-telefon">Telefon <span class="required-mark">*</span></label>
+                <input type="tel" id="erz-telefon" name="erz_telefon" />
+                <span class="field-error" aria-live="polite"></span>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Einwilligungen -->
+          <fieldset>
+            <legend>Einwilligungen &amp; Bestätigung</legend>
+
+            <div class="consent-group">
+              <label class="checkbox-label checkbox-consent">
+                <input type="checkbox" id="sepa-consent" name="sepa_consent" required />
+                <span>Ich ermächtige den SV Fortuna e.V., Zahlungen von meinem Konto mittels SEPA-Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die vom SV Fortuna e.V. auf mein Konto gezogenen Lastschriften einzulösen. <strong>Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen.</strong> <span class="required-mark">*</span></span>
+              </label>
+              <span class="field-error" aria-live="polite" id="sepa-error"></span>
+            </div>
+
+            <div class="consent-group">
+              <label class="checkbox-label checkbox-consent">
+                <input type="checkbox" id="datenschutz-consent" name="datenschutz_consent" required />
+                <span>Ich habe die <a href="datenschutz.html" target="_blank">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner personenbezogenen Daten zur Bearbeitung meines Mitgliedsantrags und Verwaltung meiner Mitgliedschaft zu. Diese Einwilligung kann ich jederzeit widerrufen. <span class="required-mark">*</span></span>
+              </label>
+              <span class="field-error" aria-live="polite" id="datenschutz-error"></span>
+            </div>
+
+            <div class="consent-group">
+              <label class="checkbox-label checkbox-consent">
+                <input type="checkbox" id="satzung-consent" name="satzung_consent" required />
+                <span>Ich erkenne die Vereinssatzung und Ordnungen des SV Fortuna e.V. als verbindlich an. <span class="required-mark">*</span></span>
+              </label>
+              <span class="field-error" aria-live="polite" id="satzung-error"></span>
+            </div>
+
+            <div class="consent-group">
+              <label class="checkbox-label checkbox-consent">
+                <input type="checkbox" id="newsletter-consent" name="newsletter_consent" />
+                <span>Ich möchte den Newsletter des SV Fortuna (Vereinsnachrichten, Terminhinweise) per E-Mail erhalten. Diese Einwilligung kann ich jederzeit widerrufen. (Optional)</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="form-submit-area">
+            <button type="submit" class="btn btn-primary btn-lg btn-submit" id="submit-btn">
+              <span class="btn-text">Mitgliedsantrag absenden</span>
+              <span class="btn-spinner" hidden>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="40 20" /></svg>
+              </span>
+            </button>
+            <p class="submit-note">Durch das Absenden bestätigen Sie, dass Ihre Angaben korrekt und vollständig sind. Der Antrag ist erst nach schriftlicher Bestätigung durch den Verein wirksam.</p>
+          </div>
+        </form>
+
+        <!-- Erfolgsseite (versteckt) -->
+        <div id="form-success" class="form-success" hidden>
+          <div class="success-icon">✅</div>
+          <h2>Antrag erfolgreich eingegangen!</h2>
+          <p>Vielen Dank, <strong id="success-name"></strong>! Ihr Mitgliedsantrag ist bei uns eingegangen. Wir prüfen Ihren Antrag und melden uns innerhalb von 3 Werktagen per E-Mail bei Ihnen.</p>
+          <p>Bei Fragen erreichen Sie uns unter <a href="mailto:info@sv-fortuna.de">info@sv-fortuna.de</a> oder <a href="tel:+4912345678900">+49 (0) 123 456 789-00</a>.</p>
+          <a href="index.html" class="btn btn-primary">Zurück zur Startseite</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© <span class="year-placeholder"></span> SV Fortuna e.V. | <a href="impressum.html">Impressum</a> | <a href="datenschutz.html">Datenschutz</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/form.js"></script>
+</body>
+</html>
