@@ -1,27 +1,25 @@
 # Portainer Stack – einfach in den Web Editor kopieren und deployen.
-# Einzige Pflicht: SESSION_SECRET als Umgebungsvariable setzen
-# (unter "Environment variables" in Portainer, oder unten direkt eintragen).
 #
-# Secret generieren (Terminal auf dem Server):
-#   openssl rand -hex 32
+# Voraussetzung: Das GitHub Container Registry Image muss öffentlich sein.
+# → github.com/blatttv?tab=packages → sv-fortuna → Package settings → Public
+#
+# SESSION_SECRET unbedingt ändern!
+# Generieren: openssl rand -hex 32
 
 services:
   web:
-    build:
-      # Docker holt den Quellcode direkt von GitHub – kein git clone nötig.
-      context: https://github.com/blatttv/sv-fortuna.git#claude/sv-fortuna-website-otq2hh
-      dockerfile: Dockerfile
+    image: ghcr.io/blatttv/sv-fortuna:latest
     ports:
       - "3000:3000"
     volumes:
-      # SQLite-Datenbanken (Events, Mitglieder, Sessions) bleiben beim Neustart erhalten.
+      # SQLite-Datenbanken bleiben beim Neustart erhalten
       - sv_data:/app/data
     environment:
       NODE_ENV: production
       PORT: 3000
-      # PFLICHT: Hier ein sicheres Secret eintragen oder über Portainer-Env setzen!
+      # PFLICHT: Hier ein sicheres Secret eintragen!
       SESSION_SECRET: change-me-before-deploying
-      # Auf "1" setzen wenn nginx/traefik mit HTTPS davor läuft.
+      # Auf "1" setzen wenn nginx/traefik mit HTTPS davor läuft
       TRUST_PROXY: ""
     restart: unless-stopped
 
