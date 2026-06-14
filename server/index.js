@@ -26,18 +26,29 @@ if (SECRET === 'svfortuna-dev-secret-change-in-production') {
   console.warn('⚠️  SESSION_SECRET nicht gesetzt – .env.example → .env kopieren!');
 }
 
-/* ---------- Security headers ---------- */
+/* ---------- Security headers ----------
+   Wichtig: Bei direktem HTTP-Zugriff (z.B. http://server:3000) dürfen KEINE
+   HTTPS-erzwingenden Header gesetzt werden. helmets Standard-CSP enthält sonst
+   'upgrade-insecure-requests' – der Browser lädt css/js/Fonts dann über https://,
+   was ohne TLS fehlschlägt → die Seite erscheint komplett ohne Design.
+   Nur wenn ein TLS-Proxy davor läuft (TRUST_PROXY gesetzt) erzwingen wir HTTPS. */
+const BEHIND_HTTPS = !!process.env.TRUST_PROXY;
+
+const cspDirectives = {
+  defaultSrc:  ["'self'"],
+  scriptSrc:   ["'self'", "'unsafe-inline'"],
+  styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+  fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
+  imgSrc:      ["'self'", 'data:'],
+  connectSrc:  ["'self'"],
+};
+// upgrade-insecure-requests nur, wenn HTTPS wirklich verfügbar ist
+if (!BEHIND_HTTPS) cspDirectives.upgradeInsecureRequests = null;
+
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc:  ["'self'"],
-      scriptSrc:   ["'self'", "'unsafe-inline'"],
-      styleSrc:    ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc:     ["'self'", 'https://fonts.gstatic.com'],
-      imgSrc:      ["'self'", 'data:'],
-      connectSrc:  ["'self'"],
-    },
-  },
+  contentSecurityPolicy: { directives: cspDirectives },
+  // HSTS ergibt nur über HTTPS Sinn – sonst sperrt es den Browser auf https://
+  hsts: BEHIND_HTTPS,
   referrerPolicy: { policy: 'same-origin' },
 }));
 
