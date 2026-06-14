@@ -88,9 +88,11 @@ app.use(express.static(path.join(__dirname, '..')));
 /* ---------- API 404 ---------- */
 app.use('/api', (req, res) => res.status(404).json({ error: 'Endpoint nicht gefunden' }));
 
-/* ---------- Fallback (SPA-style) ---------- */
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'index.html'));
+/* ---------- 404 für nicht gefundene Seiten/Dateien ----------
+   Wichtig: KEIN SPA-Fallback auf index.html – das würde fehlende Assets
+   (z.B. css/style.css) still als HTML zurückgeben und das Styling brechen. */
+app.use((req, res) => {
+  res.status(404).type('text/plain').send('404 – Seite nicht gefunden');
 });
 
 /* ---------- Error handler ---------- */

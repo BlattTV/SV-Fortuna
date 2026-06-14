@@ -9,6 +9,8 @@
 services:
   web:
     image: ghcr.io/blatttv/sv-fortuna:latest
+    # Immer das neueste Image ziehen (Docker cached :latest sonst)
+    pull_policy: always
     ports:
       - "3000:3000"
     volumes:
