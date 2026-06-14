@@ -4,9 +4,6 @@ on:
   push:
     branches: ["claude/sv-fortuna-website-otq2hh", "main"]
 
-env:
-  IMAGE: ghcr.io/${{ github.repository_owner }}/sv-fortuna
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -25,11 +22,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # Docker registry names must be lowercase – owner can contain uppercase
+      - name: Lowercase image name
+        id: img
+        run: echo "name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/sv-fortuna" >> "$GITHUB_OUTPUT"
+
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/sv-fortuna:latest
-            ghcr.io/${{ github.repository_owner }}/sv-fortuna:${{ github.sha }}
+            ${{ steps.img.outputs.name }}:latest
+            ${{ steps.img.outputs.name }}:${{ github.sha }}
